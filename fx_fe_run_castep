@@ -1,0 +1,10 @@
+#!/bin/bash
+
+EXEC="/home/margo/CODE/CASTEP_full_modified/CASTEP-24.1/bin/linux_x86_64_gfortran10--serial/castep.serial"
+
+for d in */; do
+  cd "$d"
+  ARGS=$(basename "$PWD")
+  "$EXEC" "$ARGS"
+  cd ..
+done
