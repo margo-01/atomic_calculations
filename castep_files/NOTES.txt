@@ -1,0 +1,21 @@
+CASTEP-OTFG is modified to produce electron densities for core, valence, and all-electrons on radial logerithmic grids
+the *.proj_pot files can be ignored here (input for TEM image simulation workflow)
+
+For some elements (e.g. Be) it may be worth adjusting which electrons are treated as core and valence (controlled via the PP string in the .cell file)
+default Pd valence had an extra 0.5 5s electrons which caused a problem with the Mott-Bethe formula, so redid the CASTEP calculation with the correct valence
+
+
+
+CASTEP-xrd_sf is modified to produce x-ray scattering factors for core, valence, and all-electrons on radial logerithmic grids (recip_radial_charge.out)
+the XRD_SF calculation needs to be initialised in the .param file
+
+
+
+
+Sometimes the PW-DFT fails (it is irrelevant here because we only care about the radial OTFG calculation) and doesn't get to the XRD_SF part which can be a nuisance. I would that increasing the energy cutoff helps. 
+It should be easy to calculate fx directly from the OTFG electron density output but I did not have the time.  
+
+For compilation:
+
+The .f90 files can be copied in their respective /Source directories (OTFG and Functional) and then CASTEP is compiled as normal with make
+ 

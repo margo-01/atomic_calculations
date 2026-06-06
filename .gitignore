@@ -1,0 +1,83 @@
+# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Type checkers
+.mypy_cache/
+.pyre/
+.ruff_cache/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*~
+
+# Generated figures
+figures/*.png
+figures/*.pdf
+figures/*.svg
+
+# Data files (optional)
+# Uncomment if data can be regenerated
+# data/
+# *.csv
+# *.dat
+
+# MATLAB artifacts
+*.asv
+
+# LaTeX build files
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+
+# Python packaging
+pip-wheel-metadata/
+
+# Environment variables / secrets
+.env
+.env.*
+
+# Mac/Linux hidden files
+.AppleDouble
+.LSOverride

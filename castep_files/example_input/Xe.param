@@ -1,0 +1,7 @@
+cut_off_energy = 100 eV 
+xc_functional : RSCAN 
+write_checkpoint : none 
+%block devel_code
+CALCULATE_XRD_SF:
+:ENDCALCULATE_XRD_SF
+%endblock devel_code

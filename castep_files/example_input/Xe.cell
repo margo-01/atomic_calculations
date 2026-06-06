@@ -1,0 +1,16 @@
+%BLOCK lattice_cart
+   ANG
+       5.00000000000000        0.00000000000000        0.00000000000000
+       0.00000000000000        5.00000000000000        0.00000000000000
+       0.00000000000000        0.00000000000000        5.00000000000000
+%ENDBLOCK lattice_cart
+
+%BLOCK positions_frac
+   Xe                0.500000000000000       0.500000000000000       0.500000000000000
+%ENDBLOCK positions_frac
+
+kpoint_mp_grid :   1  1   1
+
+SYMMETRY_GENERATE
+
+FIX_ALL_CELL : TRUE
