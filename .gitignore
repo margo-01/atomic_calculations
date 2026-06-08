@@ -87,3 +87,9 @@ data/*
 
 # But allow the tarballs
 !data/*.tar.xz
+# Ignore generated data under python_scripts
+python_scripts/data/output_data/
+python_scripts/data/plots/
+
+# Keep tarballs
+!python_scripts/data/*.tar.xz
