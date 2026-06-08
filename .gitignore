@@ -81,3 +81,9 @@ pip-wheel-metadata/
 # Mac/Linux hidden files
 .AppleDouble
 .LSOverride
+#
+# Ignore everything under data
+data/*
+
+# But allow the tarballs
+!data/*.tar.xz

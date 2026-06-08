@@ -18,4 +18,6 @@ It should be easy to calculate fx directly from the OTFG electron density output
 For compilation:
 
 The .f90 files can be copied in their respective /Source directories (OTFG and Functional) and then CASTEP is compiled as normal with make
- 
+
+
+
