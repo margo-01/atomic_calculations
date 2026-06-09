@@ -54,7 +54,26 @@ def fx_ae_core_val_plot(recip_grid, fx_core, fx_val, fx_ae, Z):
 
 
 
+def fe_x_param_plot(x, y_val, fitted_val, resid_val):
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(6, 6), sharex=True,
+                               gridspec_kw={'height_ratios': [3, 1]})
 
+    ax1.plot(x, y_val, 'o', ms=4, label='DFT data')
+    ax1.plot(x, fitted_val, '-', label='Best fit')
+    ax1.set_ylabel("Scattering factor", fontsize=14)
+    ax1.legend(fontsize=14, frameon=False)
+    ax1.grid(True, alpha=0.3)
+    ax1.set_xlim(0, 4)
+
+    ax2.plot(x, resid_val, 'o', ms=3)
+    ax2.axhline(0, color='k', lw=1)
+    ax2.set_xlabel(r"$g\;[\mathrm{\AA}^{-1}]$", fontsize=14)
+    ax2.set_ylabel("Residual", fontsize=14)
+    ax2.grid(True, alpha=0.3)
+    ax2.set_xlim(0,4)
+
+    plt.tight_layout()
+    return fig
 
 
 
