@@ -1,5 +1,6 @@
 import numpy as np
 from pathlib import Path
+import csv
 
 #the loading functions rely on the same file naming and structure as in the github repo
 
@@ -43,9 +44,8 @@ def load_fe_data():
 def load_fe_norm():
     pass
 
-def save_fe_data(out_dir, element, f_e, kind = None):
-
-    f_e_out = np.column_stack((f_e))
+def save_fe_data(out_dir, element, recip_grid, f_e, kind=None):
+    f_e_out = np.column_stack((recip_grid, f_e))
     if kind is not None:
         filename = f"{element}_fe_{kind}.xy"
     else:
@@ -58,3 +58,43 @@ def save_plot(fig, filename, element=  None,dpi=300):
     if element is not None:
         filename = filename.with_name(f"{filename.stem}_{element}{filename.suffix or '.png'}")
     fig.savefig(filename, dpi=dpi, bbox_inches="tight")
+
+
+
+def GL_write_param_csv():
+    BASE_DIR = "/data/margo/atomic_calculations/fe_elements/RSCAN"   
+    OUT_CSV = "GL_params_all_elements_Be_core.csv"
+    header = ["type", "symbol", "Z", "RMSE", "chi2_red"] + \
+            [f"a{i+1}" for i in range(NL)] + [f"b{i+1}" for i in range(NL)] + \
+            [f"c{i+1}" for i in range(NG)] + [f"d{i+1}" for i in range(NG)]
+
+    if not os.path.exists(os.path.join(BASE_DIR, OUT_CSV)):
+        with open(os.path.join(BASE_DIR, OUT_CSV), "w", newline="") as f:
+            csv.writer(f).writerow(header)   
+    with open(os.path.join(BASE_DIR, OUT_CSV), "a", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(row_core)
+        writer.writerow(row_val )
+    pass
+
+
+def G_write_param_csv():
+    BASE_DIR = "/data/margo/atomic_calculations/fe_elements/RSCAN"   
+    OUT_CSV = "GL_params_all_elements_Be_core.csv"
+    header = ["type", "symbol", "Z", "RMSE", "chi2_red"] + \
+            [f"a{i+1}" for i in range(NL)] + [f"b{i+1}" for i in range(NL)] + \
+            [f"c{i+1}" for i in range(NG)] + [f"d{i+1}" for i in range(NG)]
+
+    if not os.path.exists(os.path.join(BASE_DIR, OUT_CSV)):
+        with open(os.path.join(BASE_DIR, OUT_CSV), "w", newline="") as f:
+            csv.writer(f).writerow(header)   
+    with open(os.path.join(BASE_DIR, OUT_CSV), "a", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(row_core)
+        writer.writerow(row_val )
+    pass
+
+
+
+
+

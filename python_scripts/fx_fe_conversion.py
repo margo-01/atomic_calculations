@@ -75,10 +75,9 @@ def convert_fx_to_fe(data_dir, element):
     plt.close(fig)
     
     #saving fe data for later use
-    io.save_fe_data(output_dir/'all_e', element, fe_ae, kind="all_e")
-    io.save_fe_data(output_dir/'core', element, fe_core, kind="core")
-    io.save_fe_data(output_dir/'val', element, fe_val, kind="val")
-
+    io.save_fe_data(output_dir/'all_e', element, recip_grid, fe_ae, kind="all_e")
+    io.save_fe_data(output_dir/'core', element, recip_grid, fe_core, kind="core")
+    io.save_fe_data(output_dir/'val', element, recip_grid, fe_val, kind="val")
 
 
 
