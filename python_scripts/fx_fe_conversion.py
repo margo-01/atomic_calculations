@@ -6,6 +6,7 @@ from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
 import fx_fe_io as io 
 import fx_fe_plots as plots
+import fx_fe_fit_config as config
 
 def mott_bethe(x, f_x, Z):
 
@@ -79,6 +80,11 @@ def convert_fx_to_fe(data_dir, element):
     io.save_fe_data(output_dir/'core', element, recip_grid, fe_core, kind="core")
     io.save_fe_data(output_dir/'val', element, recip_grid, fe_val, kind="val")
 
+def mb_conversion():
+    ELEMENTS = config.ELEMENTS
+    DATA_DIR = config.DATA_DIR
+    for element in ELEMENTS:
+        convert_fx_to_fe(DATA_DIR, element)    
 
 
 
