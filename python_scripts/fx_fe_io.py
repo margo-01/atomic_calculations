@@ -48,16 +48,29 @@ def load_f_e_x_data(filename):
 
     return x, y
 
+
 def load_fe_norm():
     pass
 
 def save_fe_data(out_dir, element, recip_grid, f_e, kind=None):
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
     f_e_out = np.column_stack((recip_grid, f_e))
     if kind is not None:
         filename = f"{element}_fe_{kind}.xy"
     else:
         filename = f"{element}_fe.xy"
     np.savetxt(out_dir/filename, f_e_out)
+
+def save_fx_data(out_dir, element, recip_grid, f_x, kind=None):
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    f_x_out = np.column_stack((recip_grid, f_x))
+    if kind is not None:
+        filename = f"{element}_fx_{kind}.xy"
+    else:
+        filename = f"{element}_fx.xy"
+    np.savetxt(out_dir/filename, f_x_out)
 
 
 def save_plot(fig, filename, element=  None,dpi=300):
@@ -98,7 +111,6 @@ def G_write_param_csv(BASE_DIR, OUT_CSV, row, NG, NC):
     with open(out_path, "a", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(row)
-
 
 def M_write_param_csv(BASE_DIR, OUT_CSV, row, NL, NG, NC):
     out_path = os.path.join(BASE_DIR, OUT_CSV)
