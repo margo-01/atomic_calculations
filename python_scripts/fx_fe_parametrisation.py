@@ -1,11 +1,47 @@
 import numpy as np
 from scipy.optimize import least_squares
 from pathlib import Path
+import warnings
 
 import fx_fe_fit_config as config
 import fx_fe_io as io
 import fx_fe_plots as plots
 
+def model_mixed(p, q, NL=0, NG=0, NC=0):
+    idx = 0
+    y_param = np.zeros_like(q, dtype=float)
+
+    if NL > 0:
+        a = p[idx:idx + NL]
+        idx += NL
+
+        b = p[idx:idx + NL]
+        idx += NL
+
+        y_param += (
+            a[:, None]/ (q**2 + b[:, None])
+        ).sum(axis=0)
+
+    # Gaussian terms
+    if NG > 0:
+        c = p[idx:idx + NG]
+        idx += NG
+
+        d = p[idx:idx + NG]
+        idx += NG
+
+        y_param += (
+            c[:, None] * np.exp(-d[:, None] * q**2)
+        ).sum(axis=0)
+
+    # Constant term
+    if NC > 0:
+        e = p[idx:idx + NC]
+        idx += NC
+
+        y_param += e.sum()
+
+    return y_param
 
 def modelGL(p, q, NL=0, NG=0):
     a = p[0:NL]
@@ -13,14 +49,14 @@ def modelGL(p, q, NL=0, NG=0):
     c = p[2*NL:2*NL+NG]
     d = p[2*NL+NG:2*NL+2*NG]
     
-    y_param = (a[:, None]**2 / (q**2 + b[:, None]**2)).sum(axis=0) + (c[:, None]**2 * np.exp(-d[:, None]**2 * q**2)).sum(axis=0)
+    y_param = (a**2[:, None] / (q**2 + b[:, None])**2).sum(axis=0) + (c[:, None]**2 * np.exp(-d[:, None]**2 * q**2)).sum(axis=0)
     return y_param
 
 def modelG(p, q, NG=0, NC=0):
     a = p[0:NG]
     b = p[NG:2*NG]
     const = p[2*NG:2*NG+NC]
-    y_param = (a[:, None] * np.exp(-b[:, None]* q**2)).sum(axis=0) + const.sum()
+    y_param = (a[:, None]**2 * np.exp(-b[:, None]**2 * q**2)).sum(axis=0) + const.sum()
     return y_param
 
 def residuals(model, p, x, y):
@@ -72,6 +108,8 @@ def parametrisation(data_type): # data type can be all_e, core, or val
     UPPER_BOUND = config.UPPER_BOUND
 
     ELEMENTS = config.ELEMENTS
+    MODEL_TYPE = config.model_type
+    FX = config.FX
 
     Z_elements = {
         "H": 1, "He": 2, "Li": 3, "Be": 4, "B": 5, "C": 6, "N": 7, "O": 8,
@@ -83,14 +121,26 @@ def parametrisation(data_type): # data type can be all_e, core, or val
         "Ru": 44, "Rh": 45, "Pd": 46, "Ag": 47, "Cd": 48, "In": 49, "Sn": 50,
         "Sb": 51, "Te": 52, "I": 53, "Xe": 54,
     }
-    if NL == 0:
+    if MODEL_TYPE == "G":
         model = lambda p, q: modelG(p, q, NG=NG, NC=NC)
-    else:
+        if NL != 0:
+            warnings.warn("NL is set to a non-zero value, but the Gaussian model does not use Lorentzian terms. NL will be ignored.")
+    elif MODEL_TYPE == "GL":
         model = lambda p, q: modelGL(p, q, NL=NL, NG=NG)
+        if NC != 0:
+            warnings.warn("NC is set to a non-zero value, but the Gaussian/Lorentzian model does not use constant terms. NC will be ignored.")
+    elif MODEL_TYPE == "M":
+        model = lambda p, q: model_mixed(p, q, NL=NL, NG=NG, NC=NC)
+        warnings.warn("Using mixed model with NL, NG, and NC terms. Coefficients are not constrained to be positive. Ensure that the parameters are set correctly for your data type.")
+
 
     for element in ELEMENTS:
         Z = Z_elements.get(element)
-        x , y = io.load_fe_data(filename=BASE_DIR /  f"{element}_fe_{data_type}.xy")
+        
+        if FX:
+            x , y = io.load_f_e_x_data(filename=BASE_DIR /  f"{element}_fx_{data_type}.xy") 
+        else:
+            x , y = io.load_f_e_x_data(filename=BASE_DIR /  f"{element}_fe_{data_type}.xy")
 
         best_fit = fit_data(model, x, y, Nparams, lb=[LOWER_BOUND]*Nparams, ub=[UPPER_BOUND]*Nparams,
                             n_starts=config.N_STARTS, max_nfev=config.MAX_NFEV)
@@ -101,12 +151,17 @@ def parametrisation(data_type): # data type can be all_e, core, or val
 
 
 # checking the model type to determine which csv writing function to use, and how to format the data row accordingly, then saving the data
-        if NL == 0:
-            data_row = [data_type, element, Z, rmse, chi2_red] + [float(v) for v in params]
+        if MODEL_TYPE == "G":
+            data_row = [data_type, element, Z, rmse, chi2_red] + [float(v) for v in params**2]
             io.G_write_param_csv(BASE_DIR/ "Fit_Tables", OUT_CSV, data_row, NG, NC)
-        else:
+        elif MODEL_TYPE == "GL":
             data_row = [data_type, element, Z, rmse, chi2_red] + [float(v) for v in params**2] # squaring the parameters to ensure positivity, as the model depends on the squares of the parameters
             io.GL_write_param_csv(BASE_DIR/ "Fit_Tables", OUT_CSV, data_row, NL, NG)
+        elif MODEL_TYPE == "M":
+            data_row = [data_type, element, Z, rmse, chi2_red] + [float(v) for v in params] # squaring the parameters to ensure positivity, as the model depends on the squares of the parameters
+            io.M_write_param_csv(BASE_DIR/ "Fit_Tables", OUT_CSV, data_row, NL, NG, NC)
+        else:
+            warnings.warn("Invalid model type. Please choose 'G' for Gaussian model or 'GL' for Gaussian/Lorentzian model.")
 
         io.save_plot(plots.fe_x_param_plot(x, y, fitted_final, residuals), BASE_DIR / "Fit_plots" / "fe_fit.png", element, dpi=300)
 
