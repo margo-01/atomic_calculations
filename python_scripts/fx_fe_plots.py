@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 
-def fe_single_plot(recip_grid, fe_data, filename):
+def fe_single_plot(recip_grid, fe_data):
     fig, ax = plt.subplots(figsize=(7, 4.5))
     ax.plot(recip_grid, fe_data, "k-", linewidth=2)
     ax.set_xlim(0, 3)
@@ -27,7 +27,7 @@ def fe_ae_core_val_plot(recip_grid,fe_core, fe_val,fe_ae ):
     fig.tight_layout()
     return fig
     
-def fx_single_plot(recip_grid, fx_data, filename):
+def fx_single_plot(recip_grid, fx_data):
     fig, ax = plt.subplots(figsize=(7, 4.5))
     ax.plot(recip_grid, fx_data, "k-", linewidth=2)
     ax.set_xlim(0, 6)
