@@ -40,14 +40,13 @@ def load_rho_data(data_dir, element):
 def load_fx_norm():
     pass
 
-def load_fe_data(filename):
+def load_f_e_x_data(filename):
     data = np.loadtxt(filename)
 
     x = data[:, 0]
     y = data[:, 1]
 
     return x, y
-
 
 def load_fe_norm():
     pass
@@ -101,4 +100,18 @@ def G_write_param_csv(BASE_DIR, OUT_CSV, row, NG, NC):
         writer.writerow(row)
 
 
+def M_write_param_csv(BASE_DIR, OUT_CSV, row, NL, NG, NC):
+    out_path = os.path.join(BASE_DIR, OUT_CSV)
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+
+    header = ["type", "symbol", "Z", "RMSE", "chi2_red"] + \
+            [f"a{i+1}" for i in range(NL)] + [f"b{i+1}" for i in range(NL)] + \
+            [f"c{i+1}" for i in range(NG)] + [f"d{i+1}" for i in range(NG)] + [f"cc{i+1}" for i in range(NC)] 
+
+    if not os.path.exists(out_path):
+        with open(out_path, "w", newline="") as f:
+            csv.writer(f).writerow(header)   
+    with open(out_path, "a", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(row)
 
