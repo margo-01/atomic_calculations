@@ -49,7 +49,7 @@ def modelGL(p, q, NL=0, NG=0):
     c = p[2*NL:2*NL+NG]
     d = p[2*NL+NG:2*NL+2*NG]
     
-    y_param = (a[:, None]**2 / (q**2 + b[:, None])**2).sum(axis=0) + (c[:, None]**2 * np.exp(-d[:, None]**2 * q**2)).sum(axis=0)
+    y_param = (a[:, None]**2 / (q**2 + b[:, None]**2)).sum(axis=0) + (c[:, None]**2 * np.exp(-d[:, None]**2 * q**2)).sum(axis=0)
     return y_param
 
 def modelG(p, q, NG=0, NC=0):
@@ -218,6 +218,10 @@ def parametrisation(data_type, BASE_DIR, OUT_CSV, NL, NG, NC, LOWER_BOUND, UPPER
 
         best_fit = fit_data(model, x, y, Nparams, lb=[LOWER_BOUND]*Nparams, ub=[UPPER_BOUND]*Nparams,
                             n_starts=config.N_STARTS, max_nfev=config.MAX_NFEV)
+        if best_fit is None:
+            print(f"Skipping {element}: no successful fit")
+            continue
+
         params = best_fit.x
         fitted_final = model(params, x)
         residuals = fitted_final - y 
@@ -226,13 +230,14 @@ def parametrisation(data_type, BASE_DIR, OUT_CSV, NL, NG, NC, LOWER_BOUND, UPPER
 
 # checking the model type to determine which csv writing function to use, and how to format the data row accordingly, then saving the data
         if MODEL_TYPE == "G":
-            data_row = [data_type, element, Z, rmse, chi2_red] + [float(v) for v in params**2]
+            data_row = [data_type, element, Z, rmse, chi2_red] + [float(v**2) for v in params[:NG]] + [float(v**2) for v in params[NG:2*NG]] \
+    + [float(v) for v in params[2*NG:2*NG+NC]] # avoid squaring the constant, it is not constrained to be positive
             io.G_write_param_csv(BASE_DIR/ "Fit_Tables", OUT_CSV, data_row, NG, NC)
         elif MODEL_TYPE == "GL":
             data_row = [data_type, element, Z, rmse, chi2_red] + [float(v) for v in params**2] # squaring the parameters to ensure positivity, as the model depends on the squares of the parameters
             io.GL_write_param_csv(BASE_DIR/ "Fit_Tables", OUT_CSV, data_row, NL, NG)
         elif MODEL_TYPE == "M":
-            data_row = [data_type, element, Z, rmse, chi2_red] + [float(v) for v in params] # squaring the parameters to ensure positivity, as the model depends on the squares of the parameters
+            data_row = [data_type, element, Z, rmse, chi2_red] + [float(v) for v in params] # 
             io.M_write_param_csv(BASE_DIR/ "Fit_Tables", OUT_CSV, data_row, NL, NG, NC)
         else:
             warnings.warn("Invalid model type. Please choose 'G' for Gaussian model or 'GL' for Gaussian/Lorentzian model.")
