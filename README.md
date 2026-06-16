@@ -4,7 +4,7 @@
 
 supported parametrisation models:
 
-$f_{e,\mathrm{param}}(q) = \sum^{N_G} a_i\cdot e^{-\left(\frac{x-b_i}{c_i}\right)^2} + cc $ (a,b > 0)
+$f_{e,\mathrm{param}}(q) = \sum^{N_G} a_i\cdot e^{-\left(\frac{x-b_i}{c_i}\right)^2} + cc$ (a,b > 0)
 
 $f_{e,\mathrm{param}}(q) = \sum^{N_L}\frac{a_i}{q^2+b_i} + \sum^{N_G}c_i e^{-d_iq^2}$ (a,b,c,d > 0)
 
