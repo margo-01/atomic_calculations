@@ -127,3 +127,17 @@ def M_write_param_csv(BASE_DIR, OUT_CSV, row, NL, NG, NC):
         writer = csv.writer(f)
         writer.writerow(row)
 
+def load_GL_param(data_dir):
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
