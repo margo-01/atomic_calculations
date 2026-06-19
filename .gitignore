@@ -91,6 +91,6 @@ data/*
 # Ignore generated data under python_scripts
 python_scripts/data/output_data/
 python_scripts/data/plots/
-
+python_scripts/data/plots_norm/
 # Keep tarballs
 !python_scripts/data/*.tar.xz

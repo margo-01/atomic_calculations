@@ -78,14 +78,14 @@ def fe_x_param_plot(x, y_val, fitted_val, resid_val):
 
 
 
+def rho_plot(rho_data):
+    pass
 
 
 
 
-
-
-
-
+def kappa_plot():
+    pass
 
 
 
