@@ -1,5 +1,6 @@
 import numpy as np
 from pathlib import Path
+import pandas as pd
 import csv
 import os
 
@@ -127,7 +128,30 @@ def M_write_param_csv(BASE_DIR, OUT_CSV, row, NL, NG, NC):
         writer = csv.writer(f)
         writer.writerow(row)
 
-def load_GL_param(data_dir):
+def load_GL_param(data_dir, element):
+    df = pd.read_csv(data_dir)#
+    coeffs_by_Z = {}
+    
+    for element, group in df.groupby(element):
+        n_el = group['n_el'].to_numpy(dtype=float)
+        a_vals = group[['a1', 'a2', 'a3', 'a4']].to_numpy(dtype=float)
+        b_vals = group[['b1', 'b2', 'b3', 'b4']].to_numpy(dtype=float)
+        c_vals = group[['c1', 'c2', 'c3', 'c4']].to_numpy(dtype=float)
+        d_vals = group[['d1', 'd2', 'd3', 'd4']].to_numpy(dtype=float)
+        cc_vals = group[['cc1']].to_numpy(dtype=float)
+
+        coeffs_by_Z[element] = {'n_el': n_el, 'a': a_vals, 'b': b_vals, 'c': c_vals, 'd': d_vals, 'cc1': cc_vals}
+
+    a_vals = np.asarray(coeffs_by_Z['a'], dtype=float)
+    b_vals = np.asarray(coeffs_by_Z['b'], dtype=float)
+    c_vals = np.asarray(coeffs_by_Z['c'], dtype=float)
+    d_vals = np.asarray(coeffs_by_Z['d'], dtype=float)
+    cc_vals = np.asarray(coeffs_by_Z['cc1'], dtype=float)
+
+    return a_vals, b_vals, c_vals, d_vals, cc_vals
+
+
+def load_G_param(data_dir, Z):
     pass
 
 
