@@ -4,7 +4,10 @@ import fx_fe_parametrisation as param
 import fx_fe_io as io
 
 
-def kappa_fx_tab(x, element, data_type, kappa=1, Pv=1):
+def kappa_fx_tab(x, element, data_type, kappa=1, Pv=1, NL = 5, NG = 5, NC = 1):
+    a , b, c, d = io.load_GL_param(element)
+    p = a+b+c+d
+    
 
     pass
 
