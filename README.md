@@ -1,5 +1,6 @@
 # atomic_calculations
 
+This code produces parametrised electron and x-ray atomic scattering factors based on atomic electron densities produced in CASTEP-DFT (see notes in the castep_files folder for more details). This provides a more controlled and recent alternative to (Hartree-Fock-derived) tables in International Tables Volume C, Section 6.1 (Table 6.1.1.4, Coefficients for analytical approximation of X-ray scattering factors))
 
 
 supported parametrisation models:
